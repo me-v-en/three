@@ -49,12 +49,18 @@ function setUpGUI() {
     cameraFolder.open()
 
     const dirLightFolder = gui.addFolder('Directional light')
-    dirLightFolder.add(dirLight, 'intensity', 0, 10)
+    dirLightFolder.add(dirLight, 'intensity', 0, 5);
+    dirLightFolder.add(dirLight.position, 'x', -10, 10);
+    dirLightFolder.add(dirLight.position, 'y', -10, 10);
+    dirLightFolder.add(dirLight.position, 'z', -50, 50);
     dirLightFolder.open();
 
 
     const pointLightFolder = gui.addFolder('Point light')
-    pointLightFolder.add(pointLight, 'intensity', 0, 10)
+    pointLightFolder.add(pointLight, 'intensity', 0, 5)
+    pointLightFolder.add(pointLight.position, 'x', -10, 10);
+    pointLightFolder.add(pointLight.position, 'y', -10, 10);
+    pointLightFolder.add(pointLight.position, 'z', -50, 50);
     pointLightFolder.open();
 }
 
@@ -113,8 +119,12 @@ function setUpPointlight() {
 function animation(time) {
     // mesh.rotation.x = time / 2000;
     // mesh.rotation.y = time / 1000;
-    torus.rotation.x += 0.01;
-    torus.rotation.y += 0.01;
+    const cosLoop = Math.cos(time / 1000);
+    torus.rotation.x = (cosLoop + 1) * 2 * Math.PI;
+    torus.rotation.y = (cosLoop + 1) * 2 * Math.PI;
+
+    const scaleFactor = 1 + cosLoop/2;
+    torus.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
     renderer.render(scene, camera);
 }
