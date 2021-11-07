@@ -18,6 +18,8 @@ let camera, scene, renderer;
 let geometry, material, mesh;
 let torus;
 let line;
+let dirLight;
+let pointLight;
 
 
 function init() {
@@ -40,8 +42,20 @@ function init() {
 function setUpGUI() {
     const gui = new dat.GUI();
     const cameraFolder = gui.addFolder('Camera')
-    cameraFolder.add(camera, 'fov', 0, 100)
+    cameraFolder.add(camera, 'fov', 0, 100).step(5).onChange(function (value) { camera.fov = value; camera.updateProjectionMatrix() });
+    cameraFolder.add(camera.position, 'x', -10, 10).step(.1);
+    cameraFolder.add(camera.position, 'y', -10, 10).step(.1);
+    cameraFolder.add(camera.position, 'z', -50, 50).step(.1);
     cameraFolder.open()
+
+    const dirLightFolder = gui.addFolder('Directional light')
+    dirLightFolder.add(dirLight, 'intensity', 0, 10)
+    dirLightFolder.open();
+
+
+    const pointLightFolder = gui.addFolder('Point light')
+    pointLightFolder.add(pointLight, 'intensity', 0, 10)
+    pointLightFolder.open();
 }
 
 function setUpCamera() {
@@ -74,25 +88,25 @@ function setUpLight() {
 }
 
 function setUpDirectionalLight() {
-    const DirectionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    DirectionalLight.position.set(-1, -1, 3);
+    dirLight = new THREE.DirectionalLight(0xffffff, 3);
+    dirLight.position.set(-1, -1, 3);
 
     const sphereSize = 10;
-    const DirectionalLightHelper = new THREE.DirectionalLightHelper(DirectionalLight, sphereSize);
+    const DirectionalLightHelper = new THREE.DirectionalLightHelper(dirLight, sphereSize);
 
     scene.add(DirectionalLightHelper);
-    scene.add(DirectionalLight);
+    scene.add(dirLight);
 }
 
 function setUpPointlight() {
-    const PointLight = new THREE.PointLight(0xff0000, 1);
-    PointLight.position.set(10, 10, 5);
+    pointLight = new THREE.PointLight(0xff0000, 1);
+    pointLight.position.set(10, 10, 5);
 
     const sphereSize = 1;
-    const pointLightHelper = new THREE.PointLightHelper(PointLight, sphereSize);
+    const pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
 
     scene.add(pointLightHelper);
-    scene.add(PointLight);
+    scene.add(pointLight);
 }
 
 
