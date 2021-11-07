@@ -14,7 +14,6 @@ import * as dat from 'dat.gui'
 const cell = 10;
 const simplex = new SimplexNoise();
 
-
 let camera, scene, renderer;
 let geometry, material, mesh;
 let torus;
@@ -22,7 +21,6 @@ let line;
 
 
 function init() {
-    const gui = new dat.GUI();
     scene = new THREE.Scene();
 
     setUpCamera();
@@ -35,36 +33,65 @@ function init() {
 
     scene.add(torus);
     scene.add(line);
+
+    setUpGUI();
+}
+
+function setUpGUI() {
+    const gui = new dat.GUI();
+    const cameraFolder = gui.addFolder('Camera')
+    cameraFolder.add(camera, 'fov', 0, 100)
+    cameraFolder.open()
 }
 
 function setUpCamera() {
-        // PARAMETERS OF CAMERA
+    // PARAMETERS OF CAMERA
     // FOV in deg, aspect ratio, near clipping limit (minimum distance of the camera visible to the camera), far clipping limit
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 500);
+    camera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, .1, 100);
     camera.position.set(0, 0, 10);
     camera.lookAt(0, 0, 0);
 };
 
 function setUpRenderer() {
-     // render engine
-     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-     renderer.setClearColor(0xffffff, 0);
-     // Size of the canvas and resolution
-     renderer.setSize(window.innerWidth, window.innerHeight);
-     // Animation function, just like native JS requestAnimationFrame
-     renderer.setAnimationLoop(animation);
-     // append the canvas element to the DOM
-     document.body.appendChild(renderer.domElement);
- 
-     window.addEventListener('resize', () => {
-         renderer.setSize(window.innerWidth, window.innerHeight);
-     })
+    // render engine
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setClearColor(0xffffff, 0);
+    // Size of the canvas and resolution
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // Animation function, just like native JS requestAnimationFrame
+    renderer.setAnimationLoop(animation);
+    // append the canvas element to the DOM
+    document.body.appendChild(renderer.domElement);
+
+    window.addEventListener('resize', () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    })
 };
 
 function setUpLight() {
-    const PointLight = new THREE.PointLight(0xffffff, 0.1);
-    PointLight.position.set(10, 10, 10);
+    setUpPointlight();
+    setUpDirectionalLight();
+}
 
+function setUpDirectionalLight() {
+    const DirectionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    DirectionalLight.position.set(-1, -1, 3);
+
+    const sphereSize = 10;
+    const DirectionalLightHelper = new THREE.DirectionalLightHelper(DirectionalLight, sphereSize);
+
+    scene.add(DirectionalLightHelper);
+    scene.add(DirectionalLight);
+}
+
+function setUpPointlight() {
+    const PointLight = new THREE.PointLight(0xff0000, 1);
+    PointLight.position.set(10, 10, 5);
+
+    const sphereSize = 1;
+    const pointLightHelper = new THREE.PointLightHelper(PointLight, sphereSize);
+
+    scene.add(pointLightHelper);
     scene.add(PointLight);
 }
 
