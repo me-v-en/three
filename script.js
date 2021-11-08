@@ -48,15 +48,35 @@ function setUpGUI() {
     cameraFolder.add(camera.position, 'z', -50, 50).step(.1);
     cameraFolder.open()
 
+    const torusFolder = gui.addFolder('Torus')
+    torusFolder.addColor({ color: torus.material.color.getStyle() }, 'color')
+        .listen()
+        .onChange(function (color) {
+            torus.material.color.setStyle(color);
+        });
+    torusFolder.add(torus.material, 'metalness', 0, 1);
+    torusFolder.add(torus.material, 'roughness', 0, 1);
+    torusFolder.open();
+
+
     const dirLightFolder = gui.addFolder('Directional light')
-    dirLightFolder.add(dirLight, 'intensity', 0, 5);
+    dirLightFolder.addColor({ color: dirLight.color.getStyle() }, 'color')
+        .listen()
+        .onChange(function (color) {
+            dirLight.color.setStyle(color);
+        });
+    dirLightFolder.add(dirLight, 'intensity', 0, 5)
     dirLightFolder.add(dirLight.position, 'x', -10, 10);
     dirLightFolder.add(dirLight.position, 'y', -10, 10);
     dirLightFolder.add(dirLight.position, 'z', -50, 50);
     dirLightFolder.open();
 
-
     const pointLightFolder = gui.addFolder('Point light')
+    pointLightFolder.addColor({ color: pointLight.color.getStyle() }, 'color')
+        .listen()
+        .onChange(function (color) {
+            pointLight.color.setStyle(color);
+        });
     pointLightFolder.add(pointLight, 'intensity', 0, 5)
     pointLightFolder.add(pointLight.position, 'x', -10, 10);
     pointLightFolder.add(pointLight.position, 'y', -10, 10);
@@ -85,6 +105,7 @@ function setUpRenderer() {
 
     window.addEventListener('resize', () => {
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.innerWidth / window.innerHeight)
     })
 };
 
@@ -105,7 +126,7 @@ function setUpDirectionalLight() {
 }
 
 function setUpPointlight() {
-    pointLight = new THREE.PointLight(0xff0000, 1);
+    pointLight = new THREE.PointLight("#0000ff", 1);
     pointLight.position.set(10, 10, 5);
 
     const sphereSize = 1;
@@ -123,7 +144,7 @@ function animation(time) {
     torus.rotation.x = (cosLoop + 1) * 2 * Math.PI;
     torus.rotation.y = (cosLoop + 1) * 2 * Math.PI;
 
-    const scaleFactor = 1 + cosLoop/2;
+    const scaleFactor = 1 + cosLoop / 2;
     torus.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
     renderer.render(scene, camera);
