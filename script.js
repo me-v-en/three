@@ -3,7 +3,8 @@ import SimplexNoise from 'simplex-noise';
 import * as THREE from 'three';
 import Torus from './src/torus';
 import { Line } from 'three';
-import * as dat from 'dat.gui'
+import * as dat from 'dat.gui';
+import Stats from 'stats.js';
 
 
 // import Canvas from './src/canvas';
@@ -20,10 +21,15 @@ let torus;
 let line;
 let dirLight;
 let pointLight;
+let stats;
 
 
 function init() {
     scene = new THREE.Scene();
+    stats = new Stats();
+    stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild( stats.dom );
+
 
     setUpCamera();
     setUpRenderer();
@@ -138,6 +144,9 @@ function setUpPointlight() {
 
 
 function animation(time) {
+    // Beginning calculated code
+    stats.begin();
+
     // mesh.rotation.x = time / 2000;
     // mesh.rotation.y = time / 1000;
     const cosLoop = Math.cos(time / 1000);
@@ -148,6 +157,9 @@ function animation(time) {
     torus.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
     renderer.render(scene, camera);
+
+    // Ending calculated code
+    stats.end();
 }
 
 /*--------------------
